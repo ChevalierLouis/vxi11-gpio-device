@@ -1,0 +1,92 @@
+'''
+    Raspberry Pi GPIO Status and Control
+'''
+import RPi.GPIO as GPIO
+from flask import Flask, render_template, request, jsonify
+import socket
+import os
+def get_ipaddress():
+    ip_address=''
+    s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8",8000))
+    ip_address=s.getsockname()[0]
+    s.close()
+    return ip_address
+
+app = Flask(_name_)
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
+ip=get_ipaddress()
+port=8000
+
+#On definie les GPIOs dans un dictionaire pour un accés plus facile
+actuator = {
+    "E1": 17,
+    "E2": 18,
+    "E3": 22,
+    "E4": 23,
+    "E5": 24,
+    "E6": 27
+    
+}
+
+#De meme pour les variables d'état 
+status = {
+    "E1": 0,
+    "E2": 0,
+    "E3": 0,
+    "E4": 0,
+    "E5": 0,
+    "E6": 0
+}
+
+
+# on defini les GPIOs en sortie
+# Pour chaque pin du dictionaire:
+for pin in actuator:
+    GPIO.setup(actuator[pin], GPIO.OUT)
+
+
+
+# On met a l'état bas 
+# Pour chaque GPIOs du dictionaire:
+for pin in actuator:
+    GPIO.output(actuator[pin], GPIO.LOW)
+
+@app.route("/")
+def index():
+    # On lit l'tat des GPIOs
+    # # Pour chaque pin du dictionaire:
+    for pin in actuator:
+        status[pin] = GPIO.input(actuator[pin])
+    # on passe nos etat a l'html
+    return render_template('index.html', status=status)
+
+
+
+# cette fonction est executee a chaque fois qu'un utilisateur fait une requete avec le nom de l'actioneur et son état
+@app.route("/<deviceName>/<action>")
+def action(deviceName, action):
+    # On met a l'état bas
+    # Pour chaque GPIOs du dictionaire:
+    for pin in actuator:
+        GPIO.output(actuator[pin], GPIO.LOW)
+    
+    # on change l'état pour l'actioneur demend�
+    if action == "on":
+        GPIO.output(actuator[deviceName], GPIO.HIGH)
+    if action == "off":
+        GPIO.output(actuator[deviceName], GPIO.LOW)
+        
+    # on lit l'etat des GPIOs
+    for pin in actuator:
+        status[pin] = GPIO.input(actuator[pin])
+    # on envoi le dictionaire d'état comme une reponce a la page html
+    print (status)
+    return jsonify(status)
+
+
+if _name_ == "_main_":
+    app.run(host=ip, port=port, debug=False)
