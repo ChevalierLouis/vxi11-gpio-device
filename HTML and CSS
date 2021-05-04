@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>GPIO Control</title>
+	<!-- Styles -->
+	<style>
+		*, *::before, *::after {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: inherit;
+		}
+		
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+			background-color: #4d4d4d;
+			color: #ffffff;
+		}
+		
+		.container {
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+			padding: 15px;
+			margin: 0 auto;
+			max-width: 1040px;
+			min-height: 100vh;
+		}
+		
+		.main-title {
+			padding-top: 50px;
+			text-align: center;
+			font-size: 2.3rem;
+		}
+		
+		.button-wrapper {
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			flex-wrap: wrap;
+			padding-top: 40px;
+			flex: 1;
+			margin-right: -15px;
+		}
+		
+		.button {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 150px;
+			height: 150px;
+			margin-right: 15px;
+			margin-bottom: 15px;
+			cursor: pointer;
+			color: white;
+			text-align: center;
+			background-color: #dc3545;
+		}
+		
+		.button.button-on {
+			background-color: #28a745;
+		}
+		
+		.button p:first-of-type {
+			font-size: 1.3rem;
+			font-weight: bold;
+			margin-bottom: 15px;
+		}
+	</style>
+</head>
+<body onload="ip()">
+	<div class="container">
+		<h1 class="main-title">GPIO Control</h1>
+		<center>ip : <span id="hostIp"></span></center>
+		<div class="button-wrapper">
+			<!-- Pour chaque GPIOs passe dans le dictionaire d'état dans le code python -->
+			{% for pin in status %}
+				<!-- Si l'état est bas -->
+				{% if status[pin] == 0 %}
+					<!-- on affiche le bouton off avec l'arriere plan rouge-->
+					<label for="{{pin}}" class="button">
+						<input class="checkbox" type="checkbox" name="{{ pin }}" id="{{ pin }}" hidden />
+						<div class="button-handler">
+							<p>{{ pin }} CTRL</p>
+							<p class="turn-text">TURN ON</p>
+						</div>
+					</label>
+				{% else %}
+					<!-- Sinon,on affiche le bouton on avec l'arriere plan vert-->
+					<label for="{{pin}}" class="button button-on">
+						<input class="checkbox" type="checkbox" name="{{ pin }}" id="{{ pin }}" hidden checked />
+						<div class="button-handler">
+							<p>{{ pin }} CTRL</p>
+							<p class="turn-text">TURN OFF</p>
+						</div>
+					</label>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+	<script>
+		// On convertie la liste de checkboxes en tableau
+		const checkboxes = Array.prototype.slice.call(document.querySelectorAll(".checkbox"));
+		// Pour chaque checkboxes
+		checkboxes.forEach(checkbox => {
+			// quand le bouton est check
+			checkbox.onchange = function() {
+				// On defini le statut, si la checkboxe est est check apres le click,l'etat est ON, sinon on le met a off
+				let status = this.checked ? "on" : "off";
+				// On definie l'url de la requete, avec l'id et l'etat de la checkbox qui est cliquée
+				let url = `/${this.id}/${status}`;
+				// on fait la requet a l'url
+				fetch(url)
+				.then(function(response) {
+					// A la reponce, on analise les donées JSON
+					return response.json()
+				}).then(function(json) {
+					// Pour chaque bouttons
+					for (const [key, value] of Object.entries(json)) {
+						// On definie la checkbox du bouton
+						const checkbox = document.getElementById(key);
+						// On definie le bouton 
+						const button = checkbox.parentElement;
+						// Define the text in the button
+						const turnText = button.querySelector(".turn-text");
+						// Si l'etat est a off
+						if (value == 0) {
+							// Uncheck de la checkbox
+							checkbox.checked = false;
+							// On enleve "button-on" CSS class
+							button.classList.remove("button-on");
+							// on change le texte du bouton
+							turnText.textContent = "TURN ON";
+						} else {
+							// pareil pour le contraire
+							checkbox.checked = true;
+							button.classList.add("button-on");
+							turnText.textContent = "TURN OFF";
+						}
+					}
+				}).catch(function(ex) {
+					// Si il y a une erreur 
+					alert("erreure dans la requete");
+					console.log('parsing failed: ', ex);
+				});
+			}
+		})
+		function ip(){
+		var a = location.hostname 
+		document.getElementById("hostIp").innerHTML = a
+	}
+	</script>
+</body>
+</html>
