@@ -55,3 +55,4 @@ To know your IP address open a terminal and write this command
     $ hostname -I
     
 
+not finish to write the read me
