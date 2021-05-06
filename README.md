@@ -64,5 +64,5 @@ On another machine (or the same) you can put the code of the graphical interface
 To know your IP address open a terminal and write this command
     $ hostname -I
     
-
+there is some errors in the vxiclientgui.py but it runs correctly 
 
