@@ -67,3 +67,5 @@ To know your IP address open a terminal and write this command
     
 there is some errors in the vxiclientgui.py but it runs correctly 
 
+inspired by: https://github.com/coburnw/python-vxi11-server
+
