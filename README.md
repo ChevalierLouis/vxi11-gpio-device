@@ -62,7 +62,8 @@ To change GPIOs pin go in instrument_device.py and do some changes line 36 to 43
 On another machine (or the same) you can put the code of the graphical interface vxiclientgui.py just change the ip address in the code line 5
 
 To know your IP address open a terminal and write this command
-    $ hostname -I
+   
+     $ hostname -I
     
 there is some errors in the vxiclientgui.py but it runs correctly 
 
