@@ -1,4 +1,4 @@
-# barebones-vxi11-gpio-device
+# vxi11-gpio-device
  In this project I would like to control the gpios of a Raspberry Pi with vxi11 in a graphical interface with radio buttons. I use python.
  
  
@@ -14,16 +14,26 @@ With requests https://dridk.me/python-requests.html module, the graphics part is
 
 
  
-On another machine (or the same) you can put the code of the graphical interface GUI.py but you can also run it on a web browser,mark the ip_address_of_the_raspberry_pi:8000
+On another machine (or the same) you can put the code of the graphical interface GUI.py, but you can also run it on a web browser, mark the ip_address_of_the_raspberry_pi:8000
 
 To know your IP address open a terminal and write this command
-
     $ hostname -I
-    
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
 With the GUI you need to change the ip address in the code or in the entry text bar on the top left 
     
-    
-  With vxi11 https://pypi.org/project/python-vxi11/ module, the graphics part is managed with tkinter.
+ 
+ With vxi11 https://pypi.org/project/python-vxi11/ module, the graphics part is managed with tkinter.
  
  To run this project you have to put on the Raspberry:
 
