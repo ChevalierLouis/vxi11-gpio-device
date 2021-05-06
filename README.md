@@ -41,18 +41,18 @@ With the GUI you need to change the ip address in the code or in the entry text 
           │  │  │   ├── instrument_serveur.py
           │  │  │   ├── rpc.py
           │  │  │   ├── vxi11.py
-          │  ├── templates
-          │  │  ├── index.html(HTML and CSS)
           
-You just need to run GPIOs_control_vxi.py          
+          
+          
+You just need to run GPIOs_control_vxi.py in demo server 
+
 To change GPIOs pin go in instrument_device.py and do some changes line 36 to 43 in the dictionary(don't forget to create some states below ligne 43) 
 
  
-On another machine (or the same) you can put the code of the graphical interface GUI.py but you can also run it on a web browser,mark the ip_address_of_the_raspberry_pi:8000
+On another machine (or the same) you can put the code of the graphical interface vxiclientgui.py just change the ip address in the code line 5
 
 To know your IP address open a terminal and write this command
-
     $ hostname -I
     
 
-not finish to write the read me
+
